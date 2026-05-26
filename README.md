@@ -2,13 +2,20 @@
 ![Calculator Screenshot](photos/calculator.png) 
 
 
-A simple calculator made with Python and Tkinter.
+A calculator made with Python and Tkinter.
 
 ## Features
 - Addition
 - Subtraction
 - Multiplication
 - Division
+- Exponentials
+- Mudulus
+- Floor Division
+- Logarithms
+- Exponentials
+- Trigonometric Functions
+- Inverse Trigonometric Functions
 
 ## Run
 
