@@ -27,6 +27,12 @@ def click(value):
 def clear():
     entry.delete(0, tk.END)
 
+# Function to delete last character
+def backspace():
+    current = entry.get()
+    entry.delete(0, tk.END)
+    entry.insert(0, current[:-1])
+
 # Function to calculate result
 def calculate():
     try:
@@ -80,7 +86,7 @@ buttons = [
     ['sin(', 'cos(', 'tan(', 'sqrt(', 'pi'],
     ['asin(', 'acos(', 'atan(', 'log(', 'e'],
 
-    ['log10(', 'C', '=']
+    ['log10(', '⌫', 'C', '=']
 ]
 
 # Create buttons
@@ -105,6 +111,9 @@ for row in buttons:
 
         elif btn == "C":
             action = clear
+
+        elif btn == "⌫":
+            action = backspace
 
         else:
             action = lambda x=btn: click(x)
