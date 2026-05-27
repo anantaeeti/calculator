@@ -6,6 +6,21 @@ root = tk.Tk()
 root.title("Scientific Calculator")
 root.geometry("850x600")
 
+# Theme state
+dark_mode = False
+
+# Colors
+LIGHT_BG = "#f5f5f5"
+LIGHT_BTN = "#ffffff"
+LIGHT_TEXT = "#000000"
+
+DARK_BG = "#1e1e1e"
+DARK_BTN = "#2d2d2d"
+DARK_TEXT = "#ffffff"
+
+ACCENT = "#ffb347"   # orange-yellow
+ACCENT2 = "#ffcc70"
+
 # Entry field
 entry = tk.Entry(
     root,
@@ -13,7 +28,9 @@ entry = tk.Entry(
     font=("Arial", 24),
     borderwidth=5,
     relief="ridge",
-    justify="right"
+    justify="right",
+    bg="white",
+    fg="black"
 )
 entry.pack(pady=20)
 
@@ -38,7 +55,6 @@ def calculate():
     try:
         expression = entry.get()
 
-        # Safe evaluation
         result = eval(
             expression,
             {"__builtins__": None},
@@ -72,8 +88,52 @@ def calculate():
         entry.delete(0, tk.END)
         entry.insert(0, "Error")
 
+# Toggle dark mode
+def toggle_dark_mode():
+    global dark_mode
+    dark_mode = not dark_mode
+
+    if dark_mode:
+        root.configure(bg=DARK_BG)
+        frame.configure(bg=DARK_BG)
+
+        entry.configure(
+            bg=DARK_BTN,
+            fg=DARK_TEXT,
+            insertbackground="white"
+        )
+
+        for button in all_buttons:
+            button.configure(
+                bg=DARK_BTN,
+                fg=DARK_TEXT,
+                activebackground=ACCENT,
+                activeforeground="black"
+            )
+
+    else:
+        root.configure(bg=LIGHT_BG)
+        frame.configure(bg=LIGHT_BG)
+
+        entry.configure(
+            bg="white",
+            fg=LIGHT_TEXT,
+            insertbackground="black"
+        )
+
+        for button in all_buttons:
+            button.configure(
+                bg=LIGHT_BTN,
+                fg=LIGHT_TEXT,
+                activebackground=ACCENT2,
+                activeforeground="black"
+            )
+
+# Main background
+root.configure(bg=LIGHT_BG)
+
 # Button frame
-frame = tk.Frame(root)
+frame = tk.Frame(root, bg=LIGHT_BG)
 frame.pack(expand=True, fill='both')
 
 # Button layout
@@ -86,12 +146,14 @@ buttons = [
     ['sin(', 'cos(', 'tan(', 'sqrt(', 'pi'],
     ['asin(', 'acos(', 'atan(', 'log(', 'e'],
 
-    ['log10(', '⌫', 'C', '=']
+    ['log10(', '⌫', 'C', '=', '🌙']
 ]
+
+all_buttons = []
 
 # Create buttons
 for row in buttons:
-    row_frame = tk.Frame(frame)
+    row_frame = tk.Frame(frame, bg=LIGHT_BG)
     row_frame.pack(expand=True, fill='both')
 
     for btn in row:
@@ -101,7 +163,8 @@ for row in buttons:
             tk.Label(
                 row_frame,
                 text='',
-                width=5
+                width=5,
+                bg=LIGHT_BG
             ).pack(side='left', expand=True, fill='both')
             continue
 
@@ -115,17 +178,35 @@ for row in buttons:
         elif btn == "⌫":
             action = backspace
 
+        elif btn == "🌙":
+            action = toggle_dark_mode
+
         else:
             action = lambda x=btn: click(x)
 
-        tk.Button(
+        # Accent colors for important buttons
+        if btn in ['=', 'C', '⌫', '🌙']:
+            btn_bg = ACCENT
+        else:
+            btn_bg = LIGHT_BTN
+
+        button = tk.Button(
             row_frame,
             text=btn,
-            font=("Arial", 16),
+            font=("Arial", 16, "bold"),
             command=action,
             height=2,
-            width=5
-        ).pack(side='left', expand=True, fill='both')
+            width=5,
+            bg=btn_bg,
+            fg=LIGHT_TEXT,
+            activebackground=ACCENT2,
+            relief="flat",
+            borderwidth=0
+        )
+
+        button.pack(side='left', expand=True, fill='both', padx=3, pady=3)
+
+        all_buttons.append(button)
 
 # Run app
 root.mainloop()
